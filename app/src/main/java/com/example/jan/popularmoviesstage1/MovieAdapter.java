@@ -1,6 +1,8 @@
 package com.example.jan.popularmoviesstage1;
 
 import android.app.Activity;
+import android.content.Context;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -25,22 +27,29 @@ public class MovieAdapter extends ArrayAdapter<Movie> {
     }
 
     public View getView(int position, View convertView, ViewGroup parent){
+        LayoutInflater inflater = (LayoutInflater) getContext()
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
         Movie movie = getItem(position);
+        View gridView;
         ImageView imageView;
 
         if (convertView == null) {
-            imageView = new ImageView(getContext());
+            gridView = inflater.inflate(R.layout.movie_grid_item, null);
             // I don't know how to not hardcode Height
-            imageView.setLayoutParams(new GridView.LayoutParams(GridView.AUTO_FIT, 780));
+            imageView = gridView.findViewById(R.id.movie_grid_iv);
+           gridView.setLayoutParams(new GridView.LayoutParams(GridView.AUTO_FIT, 780));
             imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
         } else {
-            imageView = (ImageView) convertView;
+           gridView = (View) convertView;
+           imageView = gridView.findViewById(R.id.movie_grid_iv);
+
         }
 
         String poster_url = movie != null ? movie.getmPoster() : null;
         Picasso.with(getContext()).load(IMAGE_BASE_URL + poster_url).into(imageView);
 
-        return imageView;
+        return gridView;
     }
 }
