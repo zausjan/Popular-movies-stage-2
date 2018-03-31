@@ -42,7 +42,7 @@ public class MainActivityFragment extends Fragment {
             sortBy = getString(R.string.key_popular);
         }
 
-        if(savedInstanceState == null || !savedInstanceState.containsKey(sortBy)){
+        if(savedInstanceState == null || !savedInstanceState.containsKey(sortBy)) {
             movieList = getMovieData(sortBy);
         }
         else{
@@ -64,8 +64,14 @@ public class MainActivityFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState){
-        View rootView = inflater.inflate(R.layout.fragment_main_activity, container, false);
+        if(sortBy.equals(getString(R.string.key_popular))){
+            getActivity().setTitle(R.string.title_popular);
+        }
+        else {
+            getActivity().setTitle(R.string.title_top_rated);
+        }
 
+        View rootView = inflater.inflate(R.layout.fragment_main_activity, container, false);
         if(movieList == null){
             Toast.makeText(getActivity(), R.string.error_network, Toast.LENGTH_LONG).show();
             return rootView;
@@ -74,7 +80,6 @@ public class MainActivityFragment extends Fragment {
 
         GridView gridview = rootView.findViewById(R.id.movies_gv);
         gridview.setAdapter(movieAdapter);
-
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View v,

@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.GridView;
 import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
@@ -20,10 +19,15 @@ import java.util.List;
 public class MovieAdapter extends ArrayAdapter<Movie> {
 
     public static final String IMAGE_BASE_URL = "http://image.tmdb.org/t/p/w185";
-
+    private List<Movie> mMovies;
 
     public MovieAdapter(Activity context, List<Movie> movies) {
         super(context, 0, movies);
+        mMovies = movies;
+    }
+
+    public List<Movie> getItems(){
+        return mMovies;
     }
 
     public View getView(int position, View convertView, ViewGroup parent){
@@ -34,15 +38,11 @@ public class MovieAdapter extends ArrayAdapter<Movie> {
         View gridView;
         ImageView imageView;
 
-        if (convertView == null) {
+        if (convertView == null && inflater != null) {
             gridView = inflater.inflate(R.layout.movie_grid_item, null);
-            // I don't know how to not hardcode Height
             imageView = gridView.findViewById(R.id.movie_grid_iv);
-           gridView.setLayoutParams(new GridView.LayoutParams(GridView.AUTO_FIT, 780));
-            imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
         } else {
-           gridView = (View) convertView;
+           gridView = convertView;
            imageView = gridView.findViewById(R.id.movie_grid_iv);
 
         }
@@ -52,4 +52,5 @@ public class MovieAdapter extends ArrayAdapter<Movie> {
 
         return gridView;
     }
+
 }
