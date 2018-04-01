@@ -1,12 +1,8 @@
 package com.example.jan.popularmoviesstage1;
 
-import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,21 +10,17 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.Toast;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
 
 
-public class MainActivityFragment extends Fragment {
+public class MainActivityFragment extends Fragment implements AsyncTaskCompleteListener<ArrayList<Movie>> {
 
     private MovieAdapter movieAdapter;
     private ArrayList<Movie> movieList;
 
     private String sortBy;
 
+    private GridView gridView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -43,15 +35,13 @@ public class MainActivityFragment extends Fragment {
         }
 
         if(savedInstanceState == null || !savedInstanceState.containsKey(sortBy)) {
-            movieList = getMovieData(sortBy);
+            new MovieFetcher(getContext(), this).execute(sortBy);
         }
         else{
             movieList = savedInstanceState.getParcelableArrayList(sortBy);
         }
 
     }
-
-    public MainActivityFragment(){}
 
     @Override
     public void onSaveInstanceState(Bundle outState){
@@ -72,15 +62,15 @@ public class MainActivityFragment extends Fragment {
         }
 
         View rootView = inflater.inflate(R.layout.fragment_main_activity, container, false);
+        gridView = rootView.findViewById(R.id.movies_gv);
+
         if(movieList == null){
-            Toast.makeText(getActivity(), R.string.error_network, Toast.LENGTH_LONG).show();
             return rootView;
         }
-        movieAdapter = new MovieAdapter(getActivity(), movieList);
 
-        GridView gridview = rootView.findViewById(R.id.movies_gv);
-        gridview.setAdapter(movieAdapter);
-        gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        movieAdapter = new MovieAdapter(getActivity(), movieList);
+        gridView.setAdapter(movieAdapter);
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View v,
                                     int position, long id) {
@@ -100,46 +90,15 @@ public class MainActivityFragment extends Fragment {
 
     }
 
-    public boolean isOnline() {
-        ConnectivityManager cm = (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo netInfo = cm != null ? cm.getActiveNetworkInfo() : null;
-        return netInfo != null && netInfo.isConnectedOrConnecting();
+
+    @Override
+    public void onTaskComplete(ArrayList<Movie> result) {
+        if(result == null){
+            Toast.makeText(getActivity(), R.string.error_network, Toast.LENGTH_LONG).show();
+            return;
+        }
+        movieList = result;
+        movieAdapter = new MovieAdapter(getActivity(), movieList);
+        gridView.setAdapter(movieAdapter);
     }
-
-    private ArrayList<Movie> getMovieData(String sortBy){
-        String response = "";
-
-        if(!isOnline()){
-            Log.e("Network error", "Error obtaining network connection");
-            return null;
-        }
-
-        try {
-            response = new MovieFetcher().execute(sortBy).get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
-
-        JSONObject jsonObject;
-        JSONArray data;
-
-        ArrayList<Movie> moviesList = new ArrayList<>();
-        try {
-            jsonObject = new JSONObject(response);
-            data = jsonObject.getJSONArray("results");
-
-            for(int i = 0; i < data.length(); i++){
-                moviesList.add(JsonUtils.parseMovie(data.getJSONObject(i).toString()));
-            }
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-            return null;
-        }
-
-        return moviesList;
-    }
-
 }

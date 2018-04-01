@@ -26,10 +26,6 @@ public class MovieAdapter extends ArrayAdapter<Movie> {
         mMovies = movies;
     }
 
-    public List<Movie> getItems(){
-        return mMovies;
-    }
-
     public View getView(int position, View convertView, ViewGroup parent){
         LayoutInflater inflater = (LayoutInflater) getContext()
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
