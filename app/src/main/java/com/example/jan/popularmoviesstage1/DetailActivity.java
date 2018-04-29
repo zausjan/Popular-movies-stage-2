@@ -46,7 +46,7 @@ public class DetailActivity extends AppCompatActivity {
 
         ImageView posterIv = findViewById(R.id.iv_movie_poster);
         String posterUrl = movie.getmPoster();
-        Picasso.with(this).load(MovieAdapter.IMAGE_BASE_URL + posterUrl).into(posterIv);
+        Picasso.with(this).load(MovieListFragment.SimpleRecyclerViewAdapter.IMAGE_BASE_URL + posterUrl).into(posterIv);
 
         TextView releaseYearTv = findViewById(R.id.tv_release_year);
         String releaseDate = movie.getmReleaseYear();

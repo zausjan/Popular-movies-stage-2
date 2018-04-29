@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
         Bundle args = new Bundle();
         args.putString("SORT_BY", sortBy);
 
-        MainActivityFragment fragment = new MainActivityFragment();
+        MovieListFragment fragment = new MovieListFragment();
         fragment.setArguments(args);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_main, fragment);
