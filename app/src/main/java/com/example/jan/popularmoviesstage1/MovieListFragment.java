@@ -7,6 +7,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -70,9 +71,10 @@ public class MovieListFragment extends Fragment implements AsyncTaskCompleteList
         else {
             getActivity().setTitle(R.string.title_top_rated);
         }
-        rv = (RecyclerView) inflater.inflate(
-                R.layout.fragment_movie_list, container, false);
-
+        View rootView = inflater.inflate(R.layout.fragment_movie_list, container, false);
+        rv = rootView.findViewById(R.id.movies_rv);
+        if(rv.getParent()!=null)
+            ((ViewGroup)rv.getParent()).removeView(rv);
         setupRecyclerView(rv);
         return rv;
     }
@@ -86,7 +88,7 @@ public class MovieListFragment extends Fragment implements AsyncTaskCompleteList
     }
 
     private void setupRecyclerView(RecyclerView recyclerView) {
-        recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
+        recyclerView.setLayoutManager(new GridLayoutManager(recyclerView.getContext(), 2));
         if(movieList == null){
             return;
         }
@@ -107,19 +109,19 @@ public class MovieListFragment extends Fragment implements AsyncTaskCompleteList
     public static class SimpleRecyclerViewAdapter extends
             RecyclerView.Adapter<SimpleRecyclerViewAdapter.ViewHolder>{
 
-        public static final String IMAGE_BASE_URL = "http://image.tmdb.org/t/p/w185";
+        static final String IMAGE_BASE_URL = "http://image.tmdb.org/t/p/w185";
         private List<Movie> mMovies;
 
 
-        public static class ViewHolder extends RecyclerView.ViewHolder{
-            public Movie mBoundMovie;
+        static class ViewHolder extends RecyclerView.ViewHolder{
+            Movie mBoundMovie;
 
-            public final View mView;
-            public final ImageView mImageView;
-            public int mPosition;
-            public Context mContext;
+            final View mView;
+            final ImageView mImageView;
+            int mPosition;
+            Context mContext;
 
-            public ViewHolder(View view) {
+            ViewHolder(View view) {
                 super(view);
                 mView = view;
                 mImageView = view.findViewById(R.id.poster_iv);
@@ -128,7 +130,7 @@ public class MovieListFragment extends Fragment implements AsyncTaskCompleteList
             }
         }
 
-        public SimpleRecyclerViewAdapter(Context context, List<Movie> movies) {
+        SimpleRecyclerViewAdapter(Context context, List<Movie> movies) {
             mMovies = movies;
         }
 
@@ -164,7 +166,7 @@ public class MovieListFragment extends Fragment implements AsyncTaskCompleteList
             return mMovies.size();
         }
 
-        public Movie getItem(int position){
+        Movie getItem(int position){
             return mMovies.get(position);
         }
 
