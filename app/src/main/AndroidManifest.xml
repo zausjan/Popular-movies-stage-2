@@ -20,7 +20,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".DetailActivity"></activity>
+        <activity android:name=".DetailActivity" />
+        <provider
+            android:authorities="@string/content_authority"
+            android:name=".data.MoviesProvider"
+            android:exported="false"
+            android:syncable="true"/>
+
     </application>
 
 </manifest>

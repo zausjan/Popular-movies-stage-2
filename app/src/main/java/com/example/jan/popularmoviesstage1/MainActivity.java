@@ -29,23 +29,29 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        outState.putString("SORT_BY", sortBy);
         super.onSaveInstanceState(outState);
+        outState.putString("SORT_BY", sortBy);
+
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.sortby_popular) {
-            sortBy = getString(R.string.key_popular);
+        switch (id){
+            case R.id.sortby_popular:
+                sortBy = getString(R.string.key_popular);
+                break;
+            case R.id.sortby_top_rated:
+                sortBy = getString(R.string.key_top_rated);
+                break;
+            case R.id.sortby_favorites:
+                sortBy = getString(R.string.key_favorites);
+                break;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-        else if(id == R.id.sortby_top_rated){
-            sortBy = getString(R.string.key_top_rated);
-        }
-        else{
-            return super.onOptionsItemSelected(item);
-        }
+
         updateFragment(sortBy);
 
         return true;
