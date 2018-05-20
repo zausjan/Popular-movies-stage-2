@@ -16,6 +16,10 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.jan.popularmoviesstage1.model.Movie;
+import com.example.jan.popularmoviesstage1.model.Trailer;
+import com.example.jan.popularmoviesstage1.model.TrailersResponse;
+
 import java.util.ArrayList;
 import java.util.List;
 

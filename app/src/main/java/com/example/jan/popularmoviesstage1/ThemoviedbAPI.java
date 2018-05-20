@@ -1,5 +1,9 @@
 package com.example.jan.popularmoviesstage1;
 
+import com.example.jan.popularmoviesstage1.model.MoviesResponse;
+import com.example.jan.popularmoviesstage1.model.ReviewsResponse;
+import com.example.jan.popularmoviesstage1.model.TrailersResponse;
+
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Path;

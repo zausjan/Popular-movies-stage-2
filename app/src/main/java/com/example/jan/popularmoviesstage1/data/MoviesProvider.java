@@ -1,7 +1,6 @@
 package com.example.jan.popularmoviesstage1.data;
 
 import android.content.ContentProvider;
-import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.UriMatcher;
@@ -12,8 +11,6 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
-
-import com.example.jan.popularmoviesstage1.Movie;
 
 /**
  * Created by janko on 5/1/18.

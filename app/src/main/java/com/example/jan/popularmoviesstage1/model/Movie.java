@@ -1,8 +1,7 @@
-package com.example.jan.popularmoviesstage1;
+package com.example.jan.popularmoviesstage1.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.widget.ArrayAdapter;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

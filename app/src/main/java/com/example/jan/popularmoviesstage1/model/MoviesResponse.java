@@ -1,4 +1,4 @@
-package com.example.jan.popularmoviesstage1;
+package com.example.jan.popularmoviesstage1.model;
 
 /**
  * Created by janko on 5/11/18.
