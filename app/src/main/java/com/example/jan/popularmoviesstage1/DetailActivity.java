@@ -76,10 +76,16 @@ public class DetailActivity extends AppCompatActivity {
         intent = new Intent(getApplicationContext(), DetailActivity.class);
         intent.putExtra(DetailActivity.EXTRA_MOVIE, movie);
 
-        TrailersFragment fragment = new TrailersFragment();
-        fragment.setArguments(intent.getExtras());
+        TrailersFragment trailersFragment = new TrailersFragment();
+        trailersFragment.setArguments(intent.getExtras());
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragment_trailers, fragment);
+        transaction.replace(R.id.fragment_trailers, trailersFragment);
+        transaction.commit();
+
+        ReviewsFragment reviewsFragment = new ReviewsFragment();
+        reviewsFragment.setArguments(intent.getExtras());
+        transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragment_reviews, reviewsFragment);
         transaction.commit();
         populateUI(movie);
     }
@@ -120,6 +126,9 @@ public class DetailActivity extends AppCompatActivity {
 
     }
 
+    private void updateFragments(){
+
+    }
     private void closeOnError() {
         finish();
         Toast.makeText(this, R.string.detail_error_message, Toast.LENGTH_SHORT).show();

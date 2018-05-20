@@ -2,6 +2,7 @@ package com.example.jan.popularmoviesstage1;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.widget.ArrayAdapter;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -40,6 +41,7 @@ public class Movie implements Parcelable {
 
 
     private ArrayList<Trailer> mTrailers;
+    private ArrayList<Review> mReviews;
 
     public Movie(String mId, String mTitle, String mPoster, String mOverview,
                  String mRating, String mReleaseYear) {
@@ -102,8 +104,15 @@ public class Movie implements Parcelable {
         return mTrailers;
     }
 
+    public ArrayList<Review> getmReviews() {
+        return mReviews;
+    }
+
     public void setmTrailers(ArrayList<Trailer> mTrailers) {
         this.mTrailers = mTrailers;
+    }
+    public void setmReviews(ArrayList<Review> mReviews) {
+        this.mReviews = mReviews;
     }
 
     @Override

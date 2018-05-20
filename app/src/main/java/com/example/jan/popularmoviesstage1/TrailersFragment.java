@@ -10,7 +10,6 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,7 +36,7 @@ public class TrailersFragment extends Fragment {
     private RecyclerView trailersRv;
     private Movie movie;
 
-    
+
     public TrailersFragment() {
 
     }
@@ -47,7 +46,7 @@ public class TrailersFragment extends Fragment {
         super.onCreate(savedInstanceState);
         Bundle b = this.getArguments();
         if(b != null){
-            movie = b.getParcelable("extra_movie");
+            movie = b.getParcelable(EXTRA_MOVIE);
         }
         fetchTrailers();
     }
@@ -71,11 +70,11 @@ public class TrailersFragment extends Fragment {
         Retrofit retrofit = builder.build();
 
         ThemoviedbAPI api = retrofit.create(ThemoviedbAPI.class);
-        Call<TrailerResponse> call = api.getTrailer(movie.getmId());
-        call.enqueue(new Callback<TrailerResponse>(){
+        Call<TrailersResponse> call = api.getTrailers(movie.getmId());
+        call.enqueue(new Callback<TrailersResponse>(){
 
             @Override
-            public void onResponse(Call<TrailerResponse> call, Response<TrailerResponse> response) {
+            public void onResponse(Call<TrailersResponse> call, Response<TrailersResponse> response) {
                 ArrayList<Trailer> result = (ArrayList<Trailer>) response.body().getTrailers();
                 if(result == null){
                     Toast.makeText(getActivity(), R.string.error_network, Toast.LENGTH_LONG).show();
@@ -86,7 +85,7 @@ public class TrailersFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<TrailerResponse> call, Throwable t) {
+            public void onFailure(Call<TrailersResponse> call, Throwable t) {
                 Toast.makeText(getActivity(), R.string.error_network, Toast.LENGTH_LONG).show();
             }
         });

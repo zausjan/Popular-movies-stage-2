@@ -9,7 +9,7 @@ import java.util.List;
  * Created by janko on 5/16/18.
  */
 
-public class TrailerResponse {
+public class TrailersResponse {
     @SerializedName("results")
     @Expose
     private List<Trailer> trailers = null;
