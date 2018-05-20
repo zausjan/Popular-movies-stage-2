@@ -14,7 +14,6 @@ public class MoviesResponse {
     @Expose
     private List<Movie> movies = null;
 
-
     public List<Movie> getMovies() {
         return movies;
     }

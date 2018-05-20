@@ -14,6 +14,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTitle(R.string.title_popular);
         setContentView(R.layout.activity_main);
         if (savedInstanceState == null) {
             updateFragment(sortBy);
@@ -41,12 +42,15 @@ public class MainActivity extends AppCompatActivity {
         switch (id){
             case R.id.sortby_popular:
                 sortBy = getString(R.string.key_popular);
+                setTitle(R.string.title_popular);
                 break;
             case R.id.sortby_top_rated:
                 sortBy = getString(R.string.key_top_rated);
+                setTitle(R.string.title_top_rated);
                 break;
             case R.id.sortby_favorites:
                 sortBy = getString(R.string.key_favorites);
+                setTitle(R.string.title_favorites);
                 break;
             default:
                 return super.onOptionsItemSelected(item);

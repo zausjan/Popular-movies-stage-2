@@ -16,4 +16,8 @@ public interface ThemoviedbAPI {
 
     @GET("{SORT_BY}" + request_url)
     Call<MoviesResponse> getMovies(@Path("SORT_BY") String sortBy);
+
+
+    @GET("{ID}/videos" + request_url )
+    Call<TrailerResponse> getTrailer(@Path("ID") String id);
 }

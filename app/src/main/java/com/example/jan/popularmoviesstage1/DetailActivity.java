@@ -1,26 +1,51 @@
 package com.example.jan.popularmoviesstage1;
 
+import android.content.ActivityNotFoundException;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Color;
+import android.net.Uri;
+import android.os.Parcelable;
+import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.jan.popularmoviesstage1.data.MoviesContract;
 import com.example.jan.popularmoviesstage1.data.MoviesDBHelper;
 import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
+import static com.example.jan.popularmoviesstage1.MovieListFragment.SimpleRecyclerViewAdapter.IMAGE_BASE_URL;
 
 
 public class DetailActivity extends AppCompatActivity {
@@ -40,8 +65,6 @@ public class DetailActivity extends AppCompatActivity {
         if (intent == null) {
             closeOnError();
         }
-
-        assert intent != null;
         movie = getIntent().getParcelableExtra(EXTRA_MOVIE);
 
         int position = intent.getIntExtra(EXTRA_POSITION, DEFAULT_POSITION);
@@ -50,6 +73,14 @@ public class DetailActivity extends AppCompatActivity {
             return;
         }
 
+        intent = new Intent(getApplicationContext(), DetailActivity.class);
+        intent.putExtra(DetailActivity.EXTRA_MOVIE, movie);
+
+        TrailersFragment fragment = new TrailersFragment();
+        fragment.setArguments(intent.getExtras());
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragment_trailers, fragment);
+        transaction.commit();
         populateUI(movie);
     }
 
@@ -59,7 +90,7 @@ public class DetailActivity extends AppCompatActivity {
 
         ImageView posterIv = findViewById(R.id.iv_movie_poster);
         String posterUrl = movie.getmPoster();
-        Picasso.with(this).load(MovieListFragment.SimpleRecyclerViewAdapter.IMAGE_BASE_URL +
+        Picasso.with(this).load(IMAGE_BASE_URL +
                 posterUrl).into(posterIv);
 
         TextView releaseYearTv = findViewById(R.id.tv_release_year);
@@ -68,10 +99,11 @@ public class DetailActivity extends AppCompatActivity {
         releaseYearTv.setText(releaseYear);
 
         TextView ratingTv = findViewById(R.id.tv_movie_rating);
-        ratingTv.setText(movie.getmRating());
+        ratingTv.setText(movie.getmRating()+ "/10");
 
         TextView overviewTv = findViewById(R.id.tv_movie_description);
         overviewTv.setText(movie.getmOverview());
+
         Button favorite = findViewById(R.id.favorite);
         favorite.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -85,8 +117,8 @@ public class DetailActivity extends AppCompatActivity {
         else {
             favorite.setBackground(getResources().getDrawable(R.mipmap.favorite_unchecked));
         }
-    }
 
+    }
 
     private void closeOnError() {
         finish();
@@ -97,7 +129,8 @@ public class DetailActivity extends AppCompatActivity {
         SQLiteOpenHelper dbHelper = new MoviesDBHelper(this);
         try {
             SQLiteDatabase db = dbHelper.getWritableDatabase();
-            String query = "SELECT * FROM  movies WHERE _id=?";
+            String query = "SELECT * FROM  " + MoviesContract.MovieEntry.TABLE_MOVIES +
+                    " WHERE  "  + MoviesContract.MovieEntry._ID+ " =?";
             Cursor cursor = db.rawQuery(query, new String[]{movie.getmId()});
             return cursor.getCount() > 0;
 

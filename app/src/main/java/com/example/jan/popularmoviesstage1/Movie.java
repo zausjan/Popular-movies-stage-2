@@ -6,6 +6,8 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
+
 /**
  * Created by janko on 3/17/18.
  */
@@ -35,6 +37,9 @@ public class Movie implements Parcelable {
     @SerializedName("release_date")
     @Expose
     private String mReleaseYear;
+
+
+    private ArrayList<Trailer> mTrailers;
 
     public Movie(String mId, String mTitle, String mPoster, String mOverview,
                  String mRating, String mReleaseYear) {
@@ -91,6 +96,14 @@ public class Movie implements Parcelable {
 
     public void setmReleaseYear(String mReleaseYear) {
         this.mReleaseYear = mReleaseYear;
+    }
+
+    public ArrayList<Trailer> getmTrailers() {
+        return mTrailers;
+    }
+
+    public void setmTrailers(ArrayList<Trailer> mTrailers) {
+        this.mTrailers = mTrailers;
     }
 
     @Override

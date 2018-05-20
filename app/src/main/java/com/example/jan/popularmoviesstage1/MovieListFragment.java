@@ -72,13 +72,6 @@ public class MovieListFragment extends Fragment implements LoaderManager.LoaderC
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-        if(sortBy.equals(getString(R.string.key_popular))){
-            getActivity().setTitle(R.string.title_popular);
-        }
-        else {
-            getActivity().setTitle(R.string.title_top_rated);
-        }
         View rootView = inflater.inflate(R.layout.fragment_movie_list, container, false);
         rv = rootView.findViewById(R.id.movies_rv);
         if(rv.getParent()!=null)
@@ -88,17 +81,29 @@ public class MovieListFragment extends Fragment implements LoaderManager.LoaderC
     }
 
     @Override
+    public void onResume(){
+        super.onResume();
+        if(sortBy.equals(getString(R.string.key_favorites))){
+            getLoaderManager().initLoader(CURSOR_LOADER_ID, null, this);
+        }
+
+        setupRecyclerView(rv);
+    }
+
+    @Override
     public void onSaveInstanceState(Bundle outState){
         super.onSaveInstanceState(outState);
         outState.putParcelableArrayList(sortBy, movieList);
         outState.putString("SORT_BY", sortBy);
     }
+
     private void setupRecyclerView(RecyclerView recyclerView) {
         recyclerView.setLayoutManager(new GridLayoutManager(recyclerView.getContext(), 2));
         if(movieList == null){
             return;
         }
-        recyclerView.setAdapter(new SimpleRecyclerViewAdapter(getActivity(), movieList));
+        adapter = new SimpleRecyclerViewAdapter(getActivity(), movieList);
+        rv.setAdapter(adapter);
     }
 
 
@@ -120,14 +125,15 @@ public class MovieListFragment extends Fragment implements LoaderManager.LoaderC
                     return;
                 }
                 movieList = result;
-                adapter = new SimpleRecyclerViewAdapter(getActivity(), movieList);
-                rv.setAdapter(adapter);
+                setupRecyclerView(rv);
             }
             @Override
             public void onFailure(Call<MoviesResponse> call, Throwable t) {
                 Toast.makeText(getActivity(), R.string.error_network, Toast.LENGTH_LONG).show();
             }
         });
+
+
     }
 
     @Override
@@ -157,15 +163,13 @@ public class MovieListFragment extends Fragment implements LoaderManager.LoaderC
             movieList.add(movie);
             data.moveToNext();
         }
-        adapter = new SimpleRecyclerViewAdapter(getActivity(), movieList);
-        rv.setAdapter(adapter);
+        setupRecyclerView(rv);
     }
 
     @Override
     public void onLoaderReset(@NonNull Loader<Cursor> loader) {
 
     }
-
 
     public static class SimpleRecyclerViewAdapter extends
             RecyclerView.Adapter<SimpleRecyclerViewAdapter.ViewHolder>{
