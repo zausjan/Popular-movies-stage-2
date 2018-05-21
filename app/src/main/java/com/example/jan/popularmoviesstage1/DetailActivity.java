@@ -3,12 +3,9 @@ package com.example.jan.popularmoviesstage1;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteException;
-import android.database.sqlite.SQLiteOpenHelper;
+import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -16,7 +13,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.jan.popularmoviesstage1.data.MoviesContract;
-import com.example.jan.popularmoviesstage1.data.MoviesDBHelper;
 import com.example.jan.popularmoviesstage1.model.Movie;
 import com.squareup.picasso.Picasso;
 
@@ -48,20 +44,7 @@ public class DetailActivity extends AppCompatActivity {
             return;
         }
 
-        intent = new Intent(getApplicationContext(), DetailActivity.class);
-        intent.putExtra(DetailActivity.EXTRA_MOVIE, movie);
-
-        TrailersFragment trailersFragment = new TrailersFragment();
-        trailersFragment.setArguments(intent.getExtras());
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragment_trailers, trailersFragment);
-        transaction.commit();
-
-        ReviewsFragment reviewsFragment = new ReviewsFragment();
-        reviewsFragment.setArguments(intent.getExtras());
-        transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragment_reviews, reviewsFragment);
-        transaction.commit();
+        updateFragments();
         populateUI(movie);
     }
 
@@ -102,26 +85,37 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     private void updateFragments(){
+        Intent intent = new Intent(getApplicationContext(), DetailActivity.class);
+        intent.putExtra(DetailActivity.EXTRA_MOVIE, movie);
 
+        TrailersFragment trailersFragment = new TrailersFragment();
+        trailersFragment.setArguments(intent.getExtras());
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragment_trailers, trailersFragment);
+        transaction.commit();
+
+        ReviewsFragment reviewsFragment = new ReviewsFragment();
+        reviewsFragment.setArguments(intent.getExtras());
+        transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragment_reviews, reviewsFragment);
+        transaction.commit();
     }
+
     private void closeOnError() {
         finish();
         Toast.makeText(this, R.string.detail_error_message, Toast.LENGTH_SHORT).show();
     }
 
     private boolean isFavorite(Movie movie) {
-        SQLiteOpenHelper dbHelper = new MoviesDBHelper(this);
-        try {
-            SQLiteDatabase db = dbHelper.getWritableDatabase();
-            String query = "SELECT * FROM  " + MoviesContract.MovieEntry.TABLE_MOVIES +
-                    " WHERE  "  + MoviesContract.MovieEntry._ID+ " =?";
-            Cursor cursor = db.rawQuery(query, new String[]{movie.getmId()});
-            return cursor.getCount() > 0;
-
-        } catch(SQLiteException e) {
-            Toast.makeText(this, "Database unavailable", Toast.LENGTH_SHORT).show();
-            return false;
-        }
+        Cursor cursor = this.getContentResolver()
+                .query(MoviesContract.MovieEntry.CONTENT_URI,
+                        null,
+                        MoviesContract.MovieEntry._ID + " = ?" ,
+                        new String[]{movie.getmId()},
+                        null,
+                        null
+                );
+        return cursor.getCount() > 0;
     }
 
     public void onFavoriteClicked() {
@@ -129,16 +123,11 @@ public class DetailActivity extends AppCompatActivity {
 
         if(isFavorite(movie)){
             //delete db entry
-            SQLiteOpenHelper dbHelper = new MoviesDBHelper(this);
-            try {
-                SQLiteDatabase db = dbHelper.getWritableDatabase();
-                int deleted = db.delete(MoviesContract.MovieEntry.TABLE_MOVIES,
-                        MoviesContract.MovieEntry._ID + " = ?" ,
-                        new String[]{movie.getmId()}
-                        );
-            } catch(SQLiteException e) {
-                Toast.makeText(this, "Database unavailable", Toast.LENGTH_SHORT).show();
-            }
+            this.getContentResolver()
+                    .delete(MoviesContract.MovieEntry.CONTENT_URI,
+                    MoviesContract.MovieEntry._ID + " = ?" ,
+                    new String[]{movie.getmId()}
+            );
             favorite.setBackground(getResources().getDrawable(R.mipmap.favorite_unchecked));
         }
         else{

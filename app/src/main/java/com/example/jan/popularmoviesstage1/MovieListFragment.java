@@ -12,6 +12,8 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,7 +39,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * A simple {@link Fragment} subclass.
  */
 public class MovieListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
-
+    private static final String SORT_BY = "sort_by";
     private ArrayList<Movie> movieList;
     private String sortBy;
 
@@ -51,7 +53,7 @@ public class MovieListFragment extends Fragment implements LoaderManager.LoaderC
         super.onCreate(savedInstanceState);
         Bundle b = this.getArguments();
         if(b != null){
-            sortBy = b.getString("SORT_BY");
+            sortBy = b.getString(SORT_BY);
         }
 
         if(sortBy == null){
@@ -80,25 +82,16 @@ public class MovieListFragment extends Fragment implements LoaderManager.LoaderC
         return rv;
     }
 
-    @Override
-    public void onResume(){
-        super.onResume();
-        if(sortBy.equals(getString(R.string.key_favorites))){
-            getLoaderManager().initLoader(CURSOR_LOADER_ID, null, this);
-        }
-
-        setupRecyclerView(rv);
-    }
 
     @Override
     public void onSaveInstanceState(Bundle outState){
         super.onSaveInstanceState(outState);
         outState.putParcelableArrayList(sortBy, movieList);
-        outState.putString("SORT_BY", sortBy);
+        outState.putString(SORT_BY, sortBy);
     }
 
     private void setupRecyclerView(RecyclerView recyclerView) {
-        recyclerView.setLayoutManager(new GridLayoutManager(recyclerView.getContext(), 2));
+        recyclerView.setLayoutManager(new GridLayoutManager(recyclerView.getContext(), numberOfColumns()));
         if(movieList == null){
             return;
         }
@@ -106,6 +99,15 @@ public class MovieListFragment extends Fragment implements LoaderManager.LoaderC
         rv.setAdapter(adapter);
     }
 
+    private int numberOfColumns() {
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int widthDivider = 400;
+        int width = displayMetrics.widthPixels;
+        int nColumns = width / widthDivider;
+        if (nColumns < 2) return 2;
+        return nColumns;
+    }
 
     void fetchMovies(String sortBy){
         final String BASE_URL = "http://api.themoviedb.org/3/movie/";
