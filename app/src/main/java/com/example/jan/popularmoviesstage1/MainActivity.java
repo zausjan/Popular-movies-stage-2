@@ -8,7 +8,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 public class MainActivity extends AppCompatActivity {
-
+    private static final String EXTRA_SORT_BY = "sort_by";
     public String sortBy;
 
     @Override
@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString("SORT_BY", sortBy);
+        outState.putString(getString(R.string.sort_by), sortBy);
 
     }
 
@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void updateFragment(String sortBy){
         Bundle args = new Bundle();
-        args.putString("SORT_BY", sortBy);
+        args.putString(EXTRA_SORT_BY, sortBy);
 
         MovieListFragment fragment = new MovieListFragment();
         fragment.setArguments(args);

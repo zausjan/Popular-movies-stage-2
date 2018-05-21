@@ -39,7 +39,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * A simple {@link Fragment} subclass.
  */
 public class MovieListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
-    private static final String SORT_BY = "sort_by";
+    private static final String EXTRA_SORT_BY = "sort_by";
     private ArrayList<Movie> movieList;
     private String sortBy;
 
@@ -53,7 +53,7 @@ public class MovieListFragment extends Fragment implements LoaderManager.LoaderC
         super.onCreate(savedInstanceState);
         Bundle b = this.getArguments();
         if(b != null){
-            sortBy = b.getString(SORT_BY);
+            sortBy = b.getString(EXTRA_SORT_BY);
         }
 
         if(sortBy == null){
@@ -87,7 +87,7 @@ public class MovieListFragment extends Fragment implements LoaderManager.LoaderC
     public void onSaveInstanceState(Bundle outState){
         super.onSaveInstanceState(outState);
         outState.putParcelableArrayList(sortBy, movieList);
-        outState.putString(SORT_BY, sortBy);
+        outState.putString(EXTRA_SORT_BY, sortBy);
     }
 
     private void setupRecyclerView(RecyclerView recyclerView) {
@@ -212,7 +212,11 @@ public class MovieListFragment extends Fragment implements LoaderManager.LoaderC
             holder.mPosition = holder.getAdapterPosition();
             holder.mBoundMovie = getItem(holder.mPosition);
             String poster_url = holder.mBoundMovie != null ? holder.mBoundMovie.getmPoster() : null;
-            Picasso.with(holder.mContext).load(IMAGE_BASE_URL + poster_url).into(holder.mImageView);
+            Picasso.with(holder.mContext)
+                    .load(IMAGE_BASE_URL + poster_url)
+                    .placeholder(R.drawable.placeholder)
+                    .error(R.drawable.error)
+                    .into(holder.mImageView);
             holder.mView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v){
