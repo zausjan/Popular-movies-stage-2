@@ -10,7 +10,6 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -72,7 +71,6 @@ public class TrailersFragment extends Fragment {
     }
 
     private void fetchTrailers(){
-        Log.d("FEETCH", "fetchTrailers: ");
         final String BASE_URL = "http://api.themoviedb.org/3/movie/";
 
         Retrofit.Builder builder = new Retrofit.Builder().baseUrl(BASE_URL)

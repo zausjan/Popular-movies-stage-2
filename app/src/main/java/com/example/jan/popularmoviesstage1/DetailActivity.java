@@ -90,7 +90,6 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     private void updateFragments(){
-        Log.d("UPDATE", "updateFragments: ");
         Intent intent = new Intent(getApplicationContext(), DetailActivity.class);
         intent.putExtra(DetailActivity.EXTRA_MOVIE, movie);
 
