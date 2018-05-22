@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString(getString(R.string.sort_by), sortBy);
+        outState.putString(EXTRA_SORT_BY, sortBy);
 
     }
 
