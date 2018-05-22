@@ -13,9 +13,7 @@ import retrofit2.http.Path;
  */
 
 public interface ThemoviedbAPI {
-    String BASE_URL = "http://api.themoviedb.org/3/movie/";
     String API_KEY = BuildConfig.API_KEY;
-
     String request_url =  "?api_key=" + API_KEY;
 
     @GET("{SORT_BY}" + request_url)

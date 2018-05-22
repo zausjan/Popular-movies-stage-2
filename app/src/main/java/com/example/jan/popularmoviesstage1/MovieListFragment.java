@@ -59,9 +59,11 @@ public class MovieListFragment extends Fragment implements LoaderManager.LoaderC
         if(sortBy == null){
             sortBy = getString(R.string.key_popular);
         }
+
         if(sortBy.equals(getString(R.string.key_popular)) || sortBy.equals(getString(R.string.key_top_rated))) {
             if(savedInstanceState == null || !savedInstanceState.containsKey(sortBy)) {
-                fetchMovies(sortBy);            }
+                fetchMovies(sortBy);
+            }
             else{
                 movieList = savedInstanceState.getParcelableArrayList(sortBy);
             }
@@ -70,6 +72,7 @@ public class MovieListFragment extends Fragment implements LoaderManager.LoaderC
             getLoaderManager().initLoader(CURSOR_LOADER_ID, null, this);
         }
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -82,6 +85,15 @@ public class MovieListFragment extends Fragment implements LoaderManager.LoaderC
         return rv;
     }
 
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(sortBy.equals(getString(R.string.sort_by_favorites))){
+            getLoaderManager().initLoader(CURSOR_LOADER_ID, null, this);
+            setupRecyclerView(rv);
+        }
+    }
 
     @Override
     public void onSaveInstanceState(Bundle outState){
@@ -150,8 +162,9 @@ public class MovieListFragment extends Fragment implements LoaderManager.LoaderC
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        data.setNotificationUri(getActivity().getContentResolver(), MoviesContract.MovieEntry.CONTENT_URI);
         data.moveToFirst();
-        movieList = new ArrayList<Movie>();
+        movieList = new ArrayList<>();
         while(!data.isAfterLast()){
             Movie movie = new Movie(
                     data.getString(data.getColumnIndex(MoviesContract.MovieEntry._ID)),
@@ -169,7 +182,6 @@ public class MovieListFragment extends Fragment implements LoaderManager.LoaderC
 
     @Override
     public void onLoaderReset(@NonNull Loader<Cursor> loader) {
-
     }
 
     public static class SimpleRecyclerViewAdapter extends
