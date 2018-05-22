@@ -124,7 +124,6 @@ public class MovieListFragment extends Fragment implements LoaderManager.LoaderC
                 ArrayList<Movie> result = (ArrayList<Movie>)response.body().getMovies();
                 if(result == null){
                     Toast.makeText(getActivity(), R.string.error_network, Toast.LENGTH_LONG).show();
-                    return;
                 }
                 movieList = result;
                 setupRecyclerView(rv);

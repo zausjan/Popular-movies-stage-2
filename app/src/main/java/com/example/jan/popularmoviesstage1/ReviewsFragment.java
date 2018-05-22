@@ -49,7 +49,10 @@ public class ReviewsFragment extends Fragment {
         if(b != null){
             movie = b.getParcelable(EXTRA_MOVIE);
         }
-        fetchReviews();
+        if(savedInstanceState == null){
+            fetchReviews();
+        }
+
     }
 
 
@@ -60,6 +63,7 @@ public class ReviewsFragment extends Fragment {
         reviewsRv = rootView.findViewById(R.id.reviews_rv);
         if(reviewsRv.getParent()!=null)
             ((ViewGroup)reviewsRv.getParent()).removeView(reviewsRv);
+        setupReviewsList();
         return reviewsRv;
     }
 

@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -43,8 +44,9 @@ public class DetailActivity extends AppCompatActivity {
             closeOnError();
             return;
         }
-
-        updateFragments();
+        if(savedInstanceState == null) {
+            updateFragments();
+        }
         populateUI(movie);
     }
 
@@ -88,6 +90,7 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     private void updateFragments(){
+        Log.d("UPDATE", "updateFragments: ");
         Intent intent = new Intent(getApplicationContext(), DetailActivity.class);
         intent.putExtra(DetailActivity.EXTRA_MOVIE, movie);
 

@@ -10,6 +10,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,7 +53,10 @@ public class TrailersFragment extends Fragment {
         if(b != null){
             movie = b.getParcelable(EXTRA_MOVIE);
         }
-        fetchTrailers();
+        if(savedInstanceState == null){
+            fetchTrailers();
+        }
+
     }
 
 
@@ -63,10 +67,12 @@ public class TrailersFragment extends Fragment {
         trailersRv = rootView.findViewById(R.id.trailers_rv);
         if(trailersRv.getParent()!=null)
             ((ViewGroup)trailersRv.getParent()).removeView(trailersRv);
+        setupTrailersList();
         return trailersRv;
     }
 
     private void fetchTrailers(){
+        Log.d("FEETCH", "fetchTrailers: ");
         final String BASE_URL = "http://api.themoviedb.org/3/movie/";
 
         Retrofit.Builder builder = new Retrofit.Builder().baseUrl(BASE_URL)
