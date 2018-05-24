@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -17,10 +18,22 @@ import com.example.jan.popularmoviesstage1.data.MoviesContract;
 import com.example.jan.popularmoviesstage1.model.Movie;
 import com.squareup.picasso.Picasso;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Optional;
+
 import static com.example.jan.popularmoviesstage1.MovieListFragment.SimpleRecyclerViewAdapter.IMAGE_BASE_URL;
 
 
 public class DetailActivity extends AppCompatActivity {
+    @BindView(R.id.iv_movie_poster)       ImageView posterIv;
+    @BindView(R.id.tv_movie_title)  TextView titleTv;
+    @BindView(R.id.tv_release_year) TextView releaseYearTv;
+    @BindView(R.id.tv_movie_rating) TextView ratingTv;
+    @BindView(R.id.tv_overview)     TextView overviewTv;
+    @BindView(R.id.favorite)        Button favorite;
+
+
     public static final String EXTRA_POSITION = "extra_position";
     private static final int DEFAULT_POSITION = -1;
 
@@ -33,6 +46,8 @@ public class DetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
+        ButterKnife.bind(this);
+
         Intent intent = getIntent();
         if (intent == null) {
             closeOnError();
@@ -51,29 +66,19 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     private void populateUI(Movie movie){
-        TextView titleTv = findViewById(R.id.tv_movie_title);
-        titleTv.setText(movie.getmTitle());
-
-        ImageView posterIv = findViewById(R.id.iv_movie_poster);
-        String posterUrl = movie.getmPoster();
         Picasso.with(this)
-                .load(IMAGE_BASE_URL + posterUrl)
+                .load(IMAGE_BASE_URL + movie.getmPoster())
                 .placeholder(R.drawable.placeholder)
                 .error(R.drawable.error)
                 .into(posterIv);
 
-        TextView releaseYearTv = findViewById(R.id.tv_release_year);
-        String releaseDate = movie.getmReleaseYear();
-        String releaseYear = releaseDate.split("-")[0];
+        titleTv.setText(movie.getmTitle());
+        String releaseYear = movie.getmReleaseYear().split("-")[0];
         releaseYearTv.setText(releaseYear);
-
-        TextView ratingTv = findViewById(R.id.tv_movie_rating);
-        ratingTv.setText(movie.getmRating()+ "/10");
-
-        TextView overviewTv = findViewById(R.id.tv_movie_description);
+        String rating = movie.getmRating()+ "/10";
+        ratingTv.setText(rating);
         overviewTv.setText(movie.getmOverview());
 
-        Button favorite = findViewById(R.id.favorite);
         favorite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -124,8 +129,6 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     public void onFavoriteClicked() {
-        Button favorite = findViewById(R.id.favorite);
-
         if(isFavorite(movie)){
             //delete db entry
             this.getContentResolver()

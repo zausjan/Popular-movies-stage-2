@@ -20,6 +20,8 @@ import com.example.jan.popularmoviesstage1.model.ReviewsResponse;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -31,10 +33,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * A simple {@link Fragment} subclass.
  */
 public class ReviewsFragment extends Fragment {
-
+    @BindView(R.id.reviews_rv) RecyclerView reviewsRv;
     public static final String EXTRA_MOVIE = "extra_movie";
 
-    private RecyclerView reviewsRv;
     private Movie movie;
 
 
@@ -111,7 +112,6 @@ public class ReviewsFragment extends Fragment {
             RecyclerView.Adapter<ReviewsFragment.SimpleRecyclerViewAdapter.ViewHolder>{
 
         private List<Review> mReviews;
-        private Context mContext;
 
         SimpleRecyclerViewAdapter(Context context, List<Review> reviews) {
             mReviews = reviews;
@@ -120,17 +120,16 @@ public class ReviewsFragment extends Fragment {
         static class ViewHolder extends RecyclerView.ViewHolder{
             Review mBoundReview;
             final View mView;
-            final TextView mAuthorNameTv;
-            final TextView mReviewContentTv;
+            @BindView(R.id.author_name_tv) TextView mAuthorNameTv;
+            @BindView(R.id.content_tv) TextView mReviewContentTv;
             int mPosition;
             Context mContext;
 
             ViewHolder(View view) {
                 super(view);
                 mView = view;
-                mAuthorNameTv = view.findViewById(R.id.author_name_tv);
-                mReviewContentTv = view.findViewById(R.id.content_tv);
                 mContext = view.getContext();
+                ButterKnife.bind(this, view);
             }
         }
 

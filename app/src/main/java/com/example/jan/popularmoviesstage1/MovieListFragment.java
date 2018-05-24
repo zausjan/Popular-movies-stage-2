@@ -28,6 +28,8 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -39,12 +41,11 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * A simple {@link Fragment} subclass.
  */
 public class MovieListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
+    @BindView(R.id.movies_rv) RecyclerView rv;
+
     private static final String EXTRA_SORT_BY = "sort_by";
     private ArrayList<Movie> movieList;
     private String sortBy;
-
-    private RecyclerView rv;
-    private SimpleRecyclerViewAdapter adapter;
 
     private static final int CURSOR_LOADER_ID = 0;
 
@@ -107,7 +108,7 @@ public class MovieListFragment extends Fragment implements LoaderManager.LoaderC
         if(movieList == null){
             return;
         }
-        adapter = new SimpleRecyclerViewAdapter(getActivity(), movieList);
+        SimpleRecyclerViewAdapter adapter = new SimpleRecyclerViewAdapter(getActivity(), movieList);
         rv.setAdapter(adapter);
     }
 
@@ -190,24 +191,23 @@ public class MovieListFragment extends Fragment implements LoaderManager.LoaderC
         static final String IMAGE_BASE_URL = "http://image.tmdb.org/t/p/w185";
         private List<Movie> mMovies;
 
-        private Context mContext;
 
         SimpleRecyclerViewAdapter(Context context, List<Movie> movies) {
             mMovies = movies;
         }
 
         static class ViewHolder extends RecyclerView.ViewHolder{
+            @BindView(R.id.poster_iv) ImageView posterIv;
             Movie mBoundMovie;
             final View mView;
-            final ImageView mImageView;
             int mPosition;
             Context mContext;
 
             ViewHolder(View view) {
                 super(view);
                 mView = view;
-                mImageView = view.findViewById(R.id.poster_iv);
                 mContext = view.getContext();
+                ButterKnife.bind(this, view);
             }
         }
 
@@ -227,7 +227,7 @@ public class MovieListFragment extends Fragment implements LoaderManager.LoaderC
                     .load(IMAGE_BASE_URL + poster_url)
                     .placeholder(R.drawable.placeholder)
                     .error(R.drawable.error)
-                    .into(holder.mImageView);
+                    .into(holder.posterIv);
             holder.mView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v){

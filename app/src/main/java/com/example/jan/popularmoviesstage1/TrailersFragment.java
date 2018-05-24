@@ -23,6 +23,8 @@ import com.example.jan.popularmoviesstage1.model.TrailersResponse;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -34,10 +36,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * A simple {@link Fragment} subclass.
  */
 public class TrailersFragment extends Fragment {
-
+    @BindView(R.id.trailers_rv) RecyclerView trailersRv;
     public static final String EXTRA_MOVIE = "extra_movie";
 
-    private RecyclerView trailersRv;
     private Movie movie;
 
 
@@ -114,7 +115,6 @@ public class TrailersFragment extends Fragment {
             RecyclerView.Adapter<TrailersFragment.SimpleRecyclerViewAdapter.ViewHolder>{
 
         private List<Trailer> mTrailers;
-        private Context mContext;
 
         SimpleRecyclerViewAdapter(Context context, List<Trailer> trailers) {
             mTrailers = trailers;
@@ -123,15 +123,15 @@ public class TrailersFragment extends Fragment {
         static class ViewHolder extends RecyclerView.ViewHolder{
             Trailer mBoundTrailer;
             final View mView;
-            final TextView mTrailerNameTv;
+            @BindView(R.id.trailer_name) TextView mTrailerNameTv;
             int mPosition;
             Context mContext;
 
             ViewHolder(View view) {
                 super(view);
                 mView = view;
-                mTrailerNameTv = view.findViewById(R.id.trailer_name);
                 mContext = view.getContext();
+                ButterKnife.bind(this, view);
             }
         }
 
